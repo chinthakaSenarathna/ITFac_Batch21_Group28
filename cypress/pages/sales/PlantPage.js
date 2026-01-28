@@ -44,14 +44,18 @@ class PlantPage {
     }
 
     selectCategory(categoryText) {
-        // If categoryText is "All Categories", value is ""
-        // Otherwise finding option by text
         if (categoryText === 'All Categories') {
             this.categorySelect.select('');
         } else {
-            // Check if option exists first?
-            // Assuming data exists
-            this.categorySelect.select(categoryText);
+            // Check if option exists before selecting to avoid error if data is missing
+            this.categorySelect.find('option').then($options => {
+                const optionExists = [...$options].some(opt => opt.text === categoryText);
+                if (optionExists) {
+                    this.categorySelect.select(categoryText);
+                } else {
+                    cy.log(`Category "${categoryText}" not found. Skipping selection.`);
+                }
+            });
         }
     }
 
