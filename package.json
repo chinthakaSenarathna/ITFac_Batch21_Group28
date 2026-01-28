@@ -1,0 +1,25 @@
+{
+  "name": "qa-training-app-tests",
+  "version": "1.0.0",
+  "description": "Cypress tests for QA Training App",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:spec": "cypress run --spec"
+  },
+  "keywords": [
+    "cypress",
+    "cucumber",
+    "testing"
+  ],
+  "author": "Antigravity",
+  "license": "ISC",
+  "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "cypress": "^13.6.0",
+    "esbuild": "^0.19.0"
+  }
+}

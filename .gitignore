@@ -1,0 +1,7 @@
+node_modules
+
+# Code directory
+code/
+
+# QA Training App directory
+QA Training App/
