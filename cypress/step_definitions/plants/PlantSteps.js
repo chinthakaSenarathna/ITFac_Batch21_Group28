@@ -1,6 +1,6 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-import LoginPage from '../../pages/sales/LoginPage';
-import PlantPage from '../../pages/sales/PlantPage';
+import LoginPage from '../../pages/plants/LoginPage';
+import PlantPage from '../../pages/plants/PlantPage';
 
 Given('User is logged in with username {string} and password {string}', (username, password) => {
     LoginPage.visit();
