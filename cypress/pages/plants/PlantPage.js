@@ -1,7 +1,9 @@
 class PlantPage {
     // Locators
+    // Priority: ID > Name > CSS
     // plants.html
 
+    // Search and Filter
     get searchInput() {
         return cy.get('input[name="name"]');
     }
@@ -19,6 +21,12 @@ class PlantPage {
         return cy.contains('a', 'Reset');
     }
 
+    // Admin Actions
+    get addPlantButton() {
+        return cy.contains('a', 'Add a Plant');
+    }
+
+    // Table
     get plantTable() {
         return cy.get('table');
     }
@@ -69,6 +77,43 @@ class PlantPage {
 
     getPlantRow(plantName) {
         return this.tableRows.contains('td', plantName).parent();
+    }
+
+    // Admin Methods
+    clickAddPlant() {
+        this.addPlantButton.click();
+    }
+
+    isAddPlantButtonVisible() {
+        return cy.get('body').then($body => {
+            return $body.find('a:contains("Add a Plant")').length > 0;
+        });
+    }
+
+    getEditButtonForPlant(plantName) {
+        return this.getPlantRow(plantName).within(() => {
+            cy.get('a[title="Edit"]');
+        });
+    }
+
+    getDeleteButtonForPlant(plantName) {
+        return this.getPlantRow(plantName).within(() => {
+            cy.get('button[title="Delete"]');
+        });
+    }
+
+    isEditActionVisible(plantName) {
+        return cy.get('body').then($body => {
+            const row = $body.find('td:contains("' + plantName + '")').closest('tr');
+            return row.find('a[title="Edit"]').length > 0;
+        });
+    }
+
+    isDeleteActionVisible(plantName) {
+        return cy.get('body').then($body => {
+            const row = $body.find('td:contains("' + plantName + '")').closest('tr');
+            return row.find('button[title="Delete"]').length > 0;
+        });
     }
 }
 
