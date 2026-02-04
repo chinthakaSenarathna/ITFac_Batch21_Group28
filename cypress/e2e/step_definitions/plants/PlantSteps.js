@@ -1,6 +1,7 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-import LoginPage from '../../pages/sales/LoginPage';
-import PlantPage from '../../pages/sales/PlantPage';
+import LoginPage from '../../pages/plants/LoginPage.js';
+import PlantPage from '../../pages/plants/PlantPage.js';
+import PlantAddPage from '../../pages/plants/PlantAddPage.js';
 
 Given('User is logged in with username {string} and password {string}', (username, password) => {
     LoginPage.visit();
@@ -146,4 +147,122 @@ Then('Validate badge text reads {string}', (text) => {
             cy.log('No badge found to validate text. Skipping.');
         }
     });
+});
+
+// ========== ADMIN TEST STEPS ==========
+
+// Admin Login
+Given('Admin is logged in with username {string} and password {string}', (username, password) => {
+    LoginPage.visit();
+    LoginPage.login(username, password);
+    // Verify login success
+    cy.url().should('include', '/ui/dashboard'); // Default redirect
+});
+
+// Admin Navigation
+Given('Admin is on Plant List page', () => {
+    PlantPage.visit();
+});
+
+Given('Admin is on Add a Plant page', () => {
+    PlantAddPage.visitAdd();
+});
+
+Given('At least one plant exists in the system', () => {
+    // We assume at least one plant exists
+    cy.log('Assuming at least one plant exists in the system');
+});
+
+// Logout Steps
+When('Admin logs out', () => {
+    // Click on logout button/menu
+    cy.contains('Logout').click();
+});
+
+When('User logs out', () => {
+    cy.contains('Logout').click();
+});
+
+// Add a Plant Button Visibility
+Then('Validate "Add a Plant" button is visible', () => {
+    PlantPage.addPlantButton.should('be.visible');
+});
+
+Then('Validate "Add a Plant" button is NOT visible', () => {
+    cy.get('body').then($body => {
+        expect($body.find('a:contains("Add a Plant")').length).to.equal(0);
+    });
+});
+
+// Edit Action Visibility
+Then('Validate "Edit" action is visible for plants in the list', () => {
+    PlantPage.tableRows.each(($row) => {
+        // Skip empty state row
+        if ($row.text().includes('No plants found')) return;
+        
+        cy.wrap($row).find('a[title="Edit"]').should('be.visible');
+    });
+});
+
+Then('Validate "Edit" action is NOT visible for any plant in the list', () => {
+    PlantPage.tableRows.each(($row) => {
+        // Skip empty state row
+        if ($row.text().includes('No plants found')) return;
+        
+        cy.wrap($row).find('a[title="Edit"]').should('not.exist');
+    });
+});
+
+// Delete Action Visibility
+Then('Validate "Delete" action is visible for plants in the list', () => {
+    PlantPage.tableRows.each(($row) => {
+        // Skip empty state row
+        if ($row.text().includes('No plants found')) return;
+        
+        cy.wrap($row).find('button[title="Delete"]').should('be.visible');
+    });
+});
+
+Then('Validate "Delete" action is NOT visible for any plant in the list', () => {
+    PlantPage.tableRows.each(($row) => {
+        // Skip empty state row
+        if ($row.text().includes('No plants found')) return;
+        
+        cy.wrap($row).find('button[title="Delete"]').should('not.exist');
+    });
+});
+
+// Add Plant Steps
+When('Admin enters plant name {string}', (name) => {
+    PlantAddPage.enterPlantName(name);
+});
+
+When('Admin selects a category from dropdown', () => {
+    PlantAddPage.selectFirstCategory();
+});
+
+When('Admin enters price {string}', (price) => {
+    PlantAddPage.enterPrice(price);
+});
+
+When('Admin enters quantity {string}', (quantity) => {
+    PlantAddPage.enterQuantity(quantity);
+});
+
+When('Admin clicks Save button', () => {
+    PlantAddPage.clickSave();
+});
+
+When('Admin clicks Cancel button', () => {
+    PlantAddPage.clickCancel();
+});
+
+// Add Plant Validation
+Then('Validate Admin is redirected to Plant List page', () => {
+    cy.url().should('include', '/ui/plants');
+    PlantPage.plantTable.should('be.visible');
+});
+
+Then('Validate newly added plant {string} appears in the list', (plantName) => {
+    PlantPage.tableRows.should('contain.text', plantName);
 });

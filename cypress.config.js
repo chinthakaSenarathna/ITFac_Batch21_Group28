@@ -5,7 +5,7 @@ const { createEsbuildPlugin } = require("@badeball/cypress-cucumber-preprocessor
 
 module.exports = defineConfig({
     e2e: {
-        specPattern: "cypress/features/**/*.feature",
+        specPattern: "cypress/e2e/features/**/*.feature",
         baseUrl: "http://localhost:8080",
         async setupNodeEvents(on, config) {
             // This is required for the preprocessor to be able to generate JSON reports after each run, and more,
