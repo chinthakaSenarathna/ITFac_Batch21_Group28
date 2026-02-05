@@ -31,10 +31,7 @@ When('Admin clicks Confirm Sale button', () => {
     SalesPage.confirmSale();
 });
 
-// Validate redirect to Sales page
-Then('Validate Admin is redirected to Sales page', () => {
-    cy.url().should('include', '/ui/sales');
-});
+// NOTE: "Validate Admin is redirected to Sales page" step is defined in dashboard.admin.steps.js
 
 // Validate sale created successfully
 Then('Validate sale is created successfully', () => {

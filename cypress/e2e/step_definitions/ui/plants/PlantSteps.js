@@ -3,12 +3,7 @@ import LoginPage from '../../../pages/plants/LoginPage.js';
 import PlantPage from '../../../pages/plants/PlantPage.js';
 import PlantAddPage from '../../../pages/plants/PlantAddPage.js';
 
-Given('User is logged in with username {string} and password {string}', (username, password) => {
-    LoginPage.visit();
-    LoginPage.login(username, password);
-    // Verify login success?
-    cy.url().should('include', '/ui/dashboard'); // Default redirect
-});
+// NOTE: Login steps are defined in common/login.steps.js to avoid duplication
 
 Given('User is on Plant List page', () => {
     PlantPage.visit();
@@ -151,13 +146,7 @@ Then('Validate badge text reads {string}', (text) => {
 
 // ========== ADMIN TEST STEPS ==========
 
-// Admin Login
-Given('Admin is logged in with username {string} and password {string}', (username, password) => {
-    LoginPage.visit();
-    LoginPage.login(username, password);
-    // Verify login success
-    cy.url().should('include', '/ui/dashboard'); // Default redirect
-});
+// NOTE: Admin login step is defined in common/login.steps.js to avoid duplication
 
 // Admin Navigation
 Given('Admin is on Plant List page', () => {
