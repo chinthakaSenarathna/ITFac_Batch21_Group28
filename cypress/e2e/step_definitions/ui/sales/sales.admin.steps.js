@@ -1,5 +1,5 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-import SalesPage from "../../pages/sales/SalesPage";
+import SalesPage from "../../../pages/sales/SalesPage";
 
 // Navigation
 Given('Admin is on Sales page', () => {
