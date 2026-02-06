@@ -4,10 +4,14 @@ import PlantPage from '../../../pages/plants/PlantPage.js';
 import PlantAddPage from '../../../pages/plants/PlantAddPage.js';
 
 Given('User is logged in with username {string} and password {string}', (username, password) => {
+    cy.log('🔐 Logging in as User: ' + username);
     LoginPage.visit();
     LoginPage.login(username, password);
-    // Verify login success?
-    cy.url().should('include', '/ui/dashboard'); // Default redirect
+    // Verify login success
+    cy.url({ timeout: 10000 }).should('include', '/ui/dashboard', { timeout: 10000 })
+        .then(() => {
+            cy.log('✅ User logged in successfully');
+        });
 });
 
 Given('User is on Plant List page', () => {
@@ -153,10 +157,14 @@ Then('Validate badge text reads {string}', (text) => {
 
 // Admin Login
 Given('Admin is logged in with username {string} and password {string}', (username, password) => {
+    cy.log('🔐 Logging in as Admin: ' + username);
     LoginPage.visit();
     LoginPage.login(username, password);
     // Verify login success
-    cy.url().should('include', '/ui/dashboard'); // Default redirect
+    cy.url({ timeout: 10000 }).should('include', '/ui/dashboard')
+        .then(() => {
+            cy.log('✅ Admin logged in successfully');
+        });
 });
 
 // Admin Navigation

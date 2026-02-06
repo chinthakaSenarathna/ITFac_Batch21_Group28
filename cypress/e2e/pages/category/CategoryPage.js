@@ -1,15 +1,24 @@
-class CategoryPage {
-    // Locators
-    // Priority: ID > Name > CSS
-    // categories.html
+class CategoriesPage {
 
-    // Search and Filter
-    get searchInput() {
-        return cy.get('input[name="name"]');
+    visit() {
+        cy.visit('/ui/categories');
+    }
+
+    // ===== TABLE =====
+    get categoriesTable() {
+        return cy.get('table');
+    }
+
+    get emptyStateRow() {
+        return cy.get('table tbody tr td');
+    }
+
+    // ===== BUTTONS =====
+    get addCategoryButton() {
+        return cy.contains('a', 'Add A Category');
     }
 
     get searchButton() {
-        // Form button
         return cy.contains('button', 'Search');
     }
 
@@ -17,69 +26,57 @@ class CategoryPage {
         return cy.contains('a', 'Reset');
     }
 
-    // Admin Actions
-    get addCategoryButton() {
-        return cy.contains('a', 'Add Category');
+    // ===== SEARCH / FILTER =====
+    get searchInput() {
+        return cy.get('input[name="name"]');
     }
 
-    // Table
-    get categoryTable() {
-        return cy.get('table');
+    get parentDropdown() {
+        return cy.get('select[name="parentId"]');
     }
 
-    get tableRows() {
-        return cy.get('table tbody tr');
+    selectFirstParent() {
+        this.parentDropdown.select(1);
     }
 
-    get noCategoriesMessage() {
-        return cy.contains('td', 'No categories found');
+    // ===== SORT HEADERS =====
+    get idSortHeader() {
+        return cy.contains('a', 'ID');
     }
 
-    // Methods
-    visit() {
-        cy.visit('/ui/categories');
+    get nameSortHeader() {
+        return cy.contains('a', 'Name');
     }
 
-    searchCategory(name) {
-        this.searchInput.clear();
-        if (name) {
-            this.searchInput.type(name);
-        }
+    get parentSortHeader() {
+        return cy.contains('a', 'Parent');
     }
 
-    clickSearch() {
-        this.searchButton.click();
+    // ===== DELETE =====
+    get firstDeleteButton() {
+        return cy.get('table tbody tr:first-child button[data-bs-target="#deleteModal"]');
     }
 
-    clickReset() {
-        this.resetButton.click();
+    get deleteModal() {
+        return cy.get('#deleteModal');
     }
 
+    get confirmDeleteButton() {
+        return cy.get('#deleteForm button.btn-danger');
+    }
+
+    get cancelDeleteButton() {
+        return cy.get('#deleteModal button.btn-secondary');
+    }
+
+    // Alerts
+    get successAlert() {
+        return cy.get('.alert-success');
+    }
+
+    // Helper Methods
     getCategoryRow(categoryName) {
-        return this.tableRows.contains('td', categoryName).parent();
-    }
-
-    // Admin Methods
-    clickAddCategory() {
-        this.addCategoryButton.click();
-    }
-
-    isAddCategoryButtonVisible() {
-        return cy.get('body').then($body => {
-            return $body.find('a:contains("Add Category")').length > 0;
-        });
-    }
-
-    getEditButtonForCategory(categoryName) {
-        return this.getCategoryRow(categoryName).within(() => {
-            cy.get('a[title="Edit"]');
-        });
-    }
-
-    getDeleteButtonForCategory(categoryName) {
-        return this.getCategoryRow(categoryName).within(() => {
-            cy.get('button[title="Delete"]');
-        });
+        return cy.get('table tbody tr').contains('td', categoryName).parent();
     }
 
     clickEdit(categoryName) {
@@ -87,31 +84,12 @@ class CategoryPage {
     }
 
     clickDelete(categoryName) {
-        this.getCategoryRow(categoryName).find('button[title="Delete"]').click();
+        this.getCategoryRow(categoryName).find('button[data-bs-target="#deleteModal"]').click();
     }
 
     confirmDelete() {
-        // Assuming confirmation dialog
-        cy.contains('button', 'Confirm').click();
-    }
-
-    isEditActionVisible(categoryName) {
-        return cy.get('body').then($body => {
-            const row = $body.find('td:contains("' + categoryName + '")').closest('tr');
-            return row.find('a[title="Edit"]').length > 0;
-        });
-    }
-
-    isDeleteActionVisible(categoryName) {
-        return cy.get('body').then($body => {
-            const row = $body.find('td:contains("' + categoryName + '")').closest('tr');
-            return row.find('button[title="Delete"]').length > 0;
-        });
-    }
-
-    getPlantCountForCategory(categoryName) {
-        return this.getCategoryRow(categoryName).find('td').eq(2); // Assuming 3rd column is plant count
+        this.confirmDeleteButton.click();
     }
 }
 
-export default new CategoryPage();
+export default new CategoriesPage();
