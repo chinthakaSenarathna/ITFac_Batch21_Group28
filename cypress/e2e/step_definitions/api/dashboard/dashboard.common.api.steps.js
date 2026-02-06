@@ -3,7 +3,7 @@
 
 import { Given, Then } from "@badeball/cypress-cucumber-preprocessor";
 import { apiRequest } from "../../../../support/api/apiClient";
-import { expectStatus, expectStatusOneOf, expectBodyHasKeys } from "../../../../support/api/validators";
+import { expectStatus, expectStatusOneOf, expectBodyHasKeys, expectArrayBody } from "../../../../support/api/validators";
 
 // This variable will be set by admin/user tests and read here
 // Using a shared context object that both files can access
@@ -52,4 +52,8 @@ Then("API response status should be one of {int},{int}", (a, b) => {
 Then("API response body should contain keys:", (dataTable) => {
   const keys = dataTable.raw().flat();
   expectBodyHasKeys(sharedContext.response, keys);
+});
+
+Then("API response body should be an array", () => {
+  expectArrayBody(sharedContext.response);
 });
