@@ -29,9 +29,9 @@ Feature: Plant List User UI
 
   Scenario: TC_PLT_UI_USER_03 Verify that User can filter plants by category and see filtered results
     Given User is on Plant List page
-    When User selects "Flowering Plants" from category dropdown
+    When User selects "Main Rose" from category dropdown
     And Click Search button
-    Then Validate only plants from "Flowering Plants" category are displayed
+    Then Validate only plants from "Main Rose" category are displayed
     When User selects "All Categories" from category dropdown
     And Click Search button
     Then Validate all plants from all categories are displayed

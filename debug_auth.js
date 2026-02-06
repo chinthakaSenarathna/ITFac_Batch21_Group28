@@ -4,11 +4,19 @@ try {
     const data = fs.readFileSync('api-docs.json', 'utf8');
     const spec = JSON.parse(data);
 
-    console.log("Searching for auth paths...");
-    const keys = Object.keys(spec.paths).filter(k => k.includes('auth'));
+    console.log("Searching for POST paths...");
+    const keys = Object.keys(spec.paths);
 
     keys.forEach(key => {
-        console.log(`Path: ${key}`);
+        const methods = Object.keys(spec.paths[key]);
+        if (methods.includes('post')) {
+            console.log(`POST Endpoint: ${key}`);
+        }
+    });
+
+    // Original filter loop for reference or removal
+    const oldKeys = [];
+    oldKeys.forEach(key => {
         const methods = Object.keys(spec.paths[key]);
         methods.forEach(method => {
             console.log(`  Method: ${method}`);

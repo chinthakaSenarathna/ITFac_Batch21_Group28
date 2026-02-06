@@ -2,6 +2,7 @@ import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 import LoginPage from '../../pages/plants/LoginPage.js';
 import PlantPage from '../../pages/plants/PlantPage.js';
 import PlantAddPage from '../../pages/plants/PlantAddPage.js';
+import CategoryPage from '../../pages/plants/CategoryPage.js';
 
 Given('User is logged in with username {string} and password {string}', (username, password) => {
     LoginPage.visit();
@@ -34,6 +35,35 @@ Given('No plants exist for the category {string}', (category) => {
     // Assumption
     cy.log('Assuming empty category: ' + category);
 });
+
+// Category UI Steps
+Given('Admin is on Categories List page', () => {
+    CategoryPage.visit();
+});
+
+Given('Admin is on Add a Category page', () => {
+    // Navigate to adding category directly or just verify url? 
+    // Assuming context flow: clicking "Add" takes them there.
+    // If it's a "Given", we might need to visit.
+    // But the scenario says: "Given Admin is on Categories List page" -> "When clicks Add" -> "Then Admin is on Add Category page" (implicit)
+    // The user's log shows: "And Admin is on Add a Category page" as a step.
+    // Let's ensure navigation or check.
+    cy.url().should('include', '/ui/categories/add');
+});
+
+When('Admin clicks "Add a Category" button', () => {
+    CategoryPage.clickAddCategory(); // Assuming this clicks the "Add" button on the list page
+});
+
+When('Admin clicks Add Category button', () => {
+    CategoryPage.clickAddCategory();
+});
+
+When('Admin enters category name {string}', (name) => {
+    CategoryPage.enterCategoryName(name);
+});
+
+//=========================
 
 // Search
 When('User enters {string} in the search field', (text) => {
@@ -199,7 +229,7 @@ Then('Validate "Edit" action is visible for plants in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('a[title="Edit"]').should('be.visible');
     });
 });
@@ -208,7 +238,7 @@ Then('Validate "Edit" action is NOT visible for any plant in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('a[title="Edit"]').should('not.exist');
     });
 });
@@ -218,7 +248,7 @@ Then('Validate "Delete" action is visible for plants in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('button[title="Delete"]').should('be.visible');
     });
 });
@@ -227,7 +257,7 @@ Then('Validate "Delete" action is NOT visible for any plant in the list', () => 
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('button[title="Delete"]').should('not.exist');
     });
 });
