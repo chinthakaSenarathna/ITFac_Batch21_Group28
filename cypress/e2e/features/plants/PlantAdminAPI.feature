@@ -59,11 +59,12 @@ Feature: Plant Admin API Tests
       | name     | Lily-Updated |
       | price    | 1220         |
       | quantity | 8            |
+      | category | 3            |
     And I execute an admin PUT request to "/api/plants/2" with the prepared payload
     Then The admin response status code should be 200
     And The response body should contain the updated plant with name "Lily-Updated"
     When I execute an admin GET request to "/api/plants/2"
-    Then The retrieved plant should have name "Lily-Updated", price 1220, and quantity 8
+    Then The retrieved plant should have name "Lily-Updated", price 1220, and quantity 8 and category "Flowering"
 
   Scenario: TC_PLT_API_ADMIN_05 Verify that new plant create API rejects parent categories
     Given A parent category exists with ID 1
