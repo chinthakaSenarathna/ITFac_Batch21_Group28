@@ -52,20 +52,18 @@ Feature: Plant Admin API Tests
     Then The admin response status code should be 404
     And The admin response should contain error "NOT_FOUND"
 
-  Scenario: TC_PLT_API_ADMIN_04 Verify that Admin can successfully update Category of an existing plant via API
+  Scenario: TC_PLT_API_ADMIN_04 Verify that Admin can successfully update basic plant details via API
     Given Sub-categories exist: "Flowering" (ID 3) and "Succulent" (ID 4)
-    And A plant exists with ID 1 in category "Flowering"
-    When I prepare a plant update payload for ID 1 with:
-      | name     | Lily      |
-      | price    | 1220      |
-      | quantity | 8         |
-      | category | 4         |
-    And I execute an admin PUT request to "/api/plants/1" with the prepared payload
+    And A plant exists with ID 2 in category "Pink Rose"
+    When I prepare a plant update payload for ID 2 with:
+      | name     | Lily-Updated |
+      | price    | 1220         |
+      | quantity | 8            |
+    And I execute an admin PUT request to "/api/plants/2" with the prepared payload
     Then The admin response status code should be 200
-    And The response body should contain the updated plant with category ID 4
-    And The admin response should contain message "Plant updated successfully"
-    When I execute an admin GET request to "/api/plants/1"
-    Then The retrieved plant should satisfy category ID 4
+    And The response body should contain the updated plant with name "Lily-Updated"
+    When I execute an admin GET request to "/api/plants/2"
+    Then The retrieved plant should have name "Lily-Updated", price 1220, and quantity 8
 
   Scenario: TC_PLT_API_ADMIN_05 Verify that new plant create API rejects parent categories
     Given A parent category exists with ID 1

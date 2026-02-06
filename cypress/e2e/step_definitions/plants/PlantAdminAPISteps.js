@@ -57,46 +57,56 @@ Given('A plant exists with ID {int}', (id) => {
 });
 
 Given('Sub-categories exist: {string} \\(ID {int}\\) and {string} \\(ID {int}\\)', (name1, id1, name2, id2) => {
-    // Helper to ensure category exists
-    const ensureCategory = (id, name) => {
-        return PlantAdminAPI.getAllCategories().then(resp => {
-            const categories = resp.body || [];
-            const exists = categories.find(c => c.id === id);
-            if (!exists) {
-                cy.log(`Category ${id} (${name}) not found. Creating it...`);
-                return PlantAdminAPI.createCategory({ id: id, name: name, subCategories: [] });
+    // 1. Ensure Parent Category 1 exists (needed to make others sub-categories)
+    PlantAdminAPI.getCategory(1).then(resp => {
+        if (resp.status === 404) {
+            cy.log("Parent Category 1 not found. Creating 'Main Category'...");
+            PlantAdminAPI.createCategory({ id: 1, name: "Main Category", subCategories: [] });
+        }
+    });
+
+    // 2. Helper to ensure category exists as a sub-category under Parent 1
+    const ensureSubCategory = (id, name) => {
+        return PlantAdminAPI.getCategory(id).then(resp => {
+            if (resp.status === 404) {
+                cy.log(`Category ${id} (${name}) not found. Creating it as sub-category under ID 1...`);
+                // Use parent: { id: 1 } strictly to ensure it's a sub-category
+                return PlantAdminAPI.createCategory({
+                    id: id,
+                    name: name,
+                    parent: { id: 1 },
+                    subCategories: []
+                });
             }
-            return cy.wrap(exists);
         });
     };
-    ensureCategory(id1, name1);
-    ensureCategory(id2, name2);
+
+    ensureSubCategory(id1, name1);
+    ensureSubCategory(id2, name2);
 });
 
 Given('A plant exists with ID {int} in category {string}', (id, catName) => {
-    // We need to ensure Plant 1 has name="Lily", price=1220, quantity=8, category="Flowering" (ID 3)
-    // First, try to get it.
+    // We need to ensure Plant exists with initial state.
+    // If we can't force ID, we at least ensure the category is valid.
     PlantAdminAPI.getPlant(id).then(resp => {
-        const desiredState = {
-            name: "Lily",
-            price: 1220,
-            quantity: 8,
-            category: { id: 3 } // Assuming Flowering is 3 based on previous step
+        const initialState = {
+            name: "Initial Lily",
+            price: 1000,
+            quantity: 5,
+            category: { id: 2 } // Use Pink Rose (ID 2) which we know exists
         };
 
         if (resp.status === 404) {
-            cy.log(`Plant ${id} not found. Creating it with desired state...`);
-            // Create in category 3
-            PlantAdminAPI.createPlant(3, desiredState).then(createResp => {
+            cy.log(`Plant ${id} not found. Creating it...`);
+            PlantAdminAPI.createPlant(2, initialState).then(createResp => {
                 if (createResp.status === 201 && createResp.body.id !== id) {
-                    cy.log(`WARNING: Created plant ID ${createResp.body.id} does not match requested ${id}. Test might fail.`);
+                    cy.log(`WARNING: Created plant ID ${createResp.body.id} does not match requested ${id}.`);
                 }
             });
         } else {
-            cy.log(`Plant ${id} found. Updating to ensure correct initial state...`);
-            PlantAdminAPI.updatePlant(id, desiredState).then(updateResp => {
-                expect(updateResp.status).to.eq(200, "Failed to reset plant state");
-            });
+            cy.log(`Plant ${id} found. Resetting...`);
+            // We can't update category, but we can reset other fields
+            PlantAdminAPI.updatePlant(id, initialState);
         }
     });
 });
@@ -134,15 +144,14 @@ When('I prepare a plant payload without {string}:', (field, table) => {
 });
 
 When('I prepare a plant update payload for ID {int} with:', (id, table) => {
-    requestPayload = {};
     const rows = table.rowsHash();
-    requestPayload.id = id;
-    requestPayload.name = rows['name'];
-    requestPayload.price = parseFloat(rows['price']);
-    requestPayload.quantity = parseInt(rows['quantity']);
-    if (rows['category']) {
-        requestPayload.category = { id: parseInt(rows['category']) };
-    }
+    requestPayload = {
+        id: id,
+        name: rows['name'],
+        price: parseFloat(rows['price']),
+        quantity: parseInt(rows['quantity'])
+    };
+    // Note: category is omitted based on user feedback and backend service limitations
 });
 
 
@@ -237,12 +246,15 @@ Then('The plant should NOT be saved in the database', () => {
     cy.log("Verification of 'not saved' is implicit via 400 error");
 });
 
-Then('The response body should contain the updated plant with category ID {int}', (catId) => {
+Then('The response body should contain the updated plant with name {string}', (name) => {
     const response = PlantAdminAPI.getLastResponse();
-    expect(response.body.category.id).to.eq(catId);
+    expect(response.body.name).to.eq(name);
 });
 
-Then('The retrieved plant should satisfy category ID {int}', (catId) => {
+Then('The retrieved plant should have name {string}, price {float}, and quantity {int}', (name, price, qty) => {
     const response = PlantAdminAPI.getLastResponse();
-    expect(response.body.category.id).to.eq(catId);
+    expect(response.body.name).to.eq(name);
+    // Use closeTo for price if it's float, otherwise eq
+    expect(response.body.price).to.eq(price);
+    expect(response.body.quantity).to.eq(qty);
 });

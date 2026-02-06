@@ -38,11 +38,11 @@ Feature: Plant User API Tests
     Given Plants exist in category "Flowering" with ID 3
     And Plants exist in category "Succulent" with ID 4
     When I send a GET request to "/api/plants/paged" with parameters:
-      | categoryId | 3  |
+      | categoryId | 2  |
       | page       | 0  |
       | size       | 10 |
     Then The response status code should be 200
-    And All returned plants should belong to category ID 3 and name "Flowering"
+    And All returned plants should belong to category ID 2 and name "Pink Rose"
     And No plants from category "Succulent" should be returned
 
   Scenario: TC_PLT_API_USER_04 Verify that a user is not allowed to create a new plant using the API

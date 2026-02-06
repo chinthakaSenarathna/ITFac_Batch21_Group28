@@ -36,13 +36,15 @@ Feature: Plant List User UI
     And Click Search button
     Then Validate all plants from all categories are displayed
 
-  Scenario: TC_PLT_UI_USER_04 Verify that the system displays "No plants found" message when no plants exist for the selected category
+  Scenario: TC_PLT_UI_USER_04 Verify that the system displays "No plants found" message when no plants exist for the selected category and search term
     Given User is on Plant List page
     When User selects "NonExistentCategory" from category dropdown
+    And User enters "apple" in the search field
     And Click Search button
     Then Validate search results displays no records
     And Validate system displays the message "No plants found"
     When User selects "All Categories" from category dropdown
+    And User clears search field
     And Click Search button
     Then Validate all plants from all categories are displayed again
 

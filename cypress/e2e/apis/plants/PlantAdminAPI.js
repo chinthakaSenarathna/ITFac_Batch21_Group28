@@ -45,6 +45,9 @@ class PlantAdminAPI {
         return cy.request({
             method: 'PUT',
             url: `/api/plants/${plantId}`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: plantData,
             auth: {
                 bearer: this.authToken
@@ -103,6 +106,20 @@ class PlantAdminAPI {
         return cy.request({
             method: 'GET',
             url: '/api/categories',
+            auth: {
+                bearer: this.authToken
+            },
+            failOnStatusCode: false
+        }).then((response) => {
+            this.lastResponse = response;
+            return response;
+        });
+    }
+
+    getCategory(id) {
+        return cy.request({
+            method: 'GET',
+            url: `/api/categories/${id}`,
             auth: {
                 bearer: this.authToken
             },
