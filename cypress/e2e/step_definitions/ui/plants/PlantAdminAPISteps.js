@@ -1,5 +1,5 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-import PlantAdminAPI from '../../apis/plants/PlantAdminAPI';
+import PlantAdminAPI from '../../../apis/plants/PlantAdminAPI.js';
 
 let requestPayload = {};
 let createdPlantId = null;

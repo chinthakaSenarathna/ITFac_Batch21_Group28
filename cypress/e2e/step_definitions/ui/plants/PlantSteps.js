@@ -1,18 +1,9 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-import LoginPage from '../../pages/plants/LoginPage.js';
-import PlantPage from '../../pages/plants/PlantPage.js';
-import PlantAddPage from '../../pages/plants/PlantAddPage.js';
-import CategoryPage from '../../pages/plants/CategoryPage.js';
+import CategoryPage from '../../../pages/plants/CategoryPage.js';
 import LoginPage from '../../../pages/plants/LoginPage.js';
 import PlantPage from '../../../pages/plants/PlantPage.js';
 import PlantAddPage from '../../../pages/plants/PlantAddPage.js';
 
-Given('User is logged in with username {string} and password {string}', (username, password) => {
-    LoginPage.visit();
-    LoginPage.login(username, password);
-    // Verify login success?
-    cy.url().should('include', '/ui/dashboard'); // Default redirect
-});
 
 Given('User is on Plant List page', () => {
     PlantPage.visit();
@@ -209,13 +200,6 @@ Then('Validate badge text reads {string}', (text) => {
 
 // ========== ADMIN TEST STEPS ==========
 
-// Admin Login
-Given('Admin is logged in with username {string} and password {string}', (username, password) => {
-    LoginPage.visit();
-    LoginPage.login(username, password);
-    // Verify login success
-    cy.url().should('include', '/ui/dashboard'); // Default redirect
-});
 
 // Admin Navigation
 Given('Admin is on Plant List page', () => {
@@ -258,7 +242,7 @@ Then('Validate "Edit" action is visible for plants in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('a[title="Edit"]').should('be.visible');
     });
 });
@@ -267,7 +251,7 @@ Then('Validate "Edit" action is NOT visible for any plant in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('a[title="Edit"]').should('not.exist');
     });
 });
@@ -277,7 +261,7 @@ Then('Validate "Delete" action is visible for plants in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('button[title="Delete"]').should('be.visible');
     });
 });
@@ -286,7 +270,7 @@ Then('Validate "Delete" action is NOT visible for any plant in the list', () => 
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-        
+
         cy.wrap($row).find('button[title="Delete"]').should('not.exist');
     });
 });
