@@ -3,6 +3,9 @@ import LoginPage from '../../pages/plants/LoginPage.js';
 import PlantPage from '../../pages/plants/PlantPage.js';
 import PlantAddPage from '../../pages/plants/PlantAddPage.js';
 import CategoryPage from '../../pages/plants/CategoryPage.js';
+import LoginPage from '../../../pages/plants/LoginPage.js';
+import PlantPage from '../../../pages/plants/PlantPage.js';
+import PlantAddPage from '../../../pages/plants/PlantAddPage.js';
 
 Given('User is logged in with username {string} and password {string}', (username, password) => {
     LoginPage.visit();
@@ -42,7 +45,7 @@ Given('Admin is on Categories List page', () => {
 });
 
 Given('Admin is on Add a Category page', () => {
-    // Navigate to adding category directly or just verify url? 
+    // Navigate to adding category directly or just verify url?
     // Assuming context flow: clicking "Add" takes them there.
     // If it's a "Given", we might need to visit.
     // But the scenario says: "Given Admin is on Categories List page" -> "When clicks Add" -> "Then Admin is on Add Category page" (implicit)
@@ -255,7 +258,7 @@ Then('Validate "Edit" action is visible for plants in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-
+        
         cy.wrap($row).find('a[title="Edit"]').should('be.visible');
     });
 });
@@ -264,7 +267,7 @@ Then('Validate "Edit" action is NOT visible for any plant in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-
+        
         cy.wrap($row).find('a[title="Edit"]').should('not.exist');
     });
 });
@@ -274,7 +277,7 @@ Then('Validate "Delete" action is visible for plants in the list', () => {
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-
+        
         cy.wrap($row).find('button[title="Delete"]').should('be.visible');
     });
 });
@@ -283,7 +286,7 @@ Then('Validate "Delete" action is NOT visible for any plant in the list', () => 
     PlantPage.tableRows.each(($row) => {
         // Skip empty state row
         if ($row.text().includes('No plants found')) return;
-
+        
         cy.wrap($row).find('button[title="Delete"]').should('not.exist');
     });
 });
@@ -310,7 +313,7 @@ When('Admin enters quantity {string}', (quantity) => {
 });
 
 When('Admin clicks Save button', () => {
-    // Both pages have a "Save" button. 
+    // Both pages have a "Save" button.
     // PlantAddPage uses cy.contains('button', 'Save') which is generic.
     // CategoryPage uses cy.get('button[type="submit"]') which also works.
     // We'll use the contains one as it's more flexible.
@@ -344,4 +347,51 @@ Then('Validate Admin is redirected to Plant List page', () => {
 
 Then('Validate newly added plant {string} appears in the list', (plantName) => {
     PlantPage.tableRows.should('contain.text', plantName);
+});
+
+// ===== Reset button =====
+When('Click Reset button', () => {
+    PlantPage.clickReset();
+});
+
+// ===== Column sorting helpers =====
+When(/^Click on the (.+) column heading once$/, (colName) => {
+    // Try to find an anchor inside the table header for the column
+    cy.get('table thead').within(() => {
+        cy.contains('a', colName).then($el => {
+            if ($el.length) {
+                cy.wrap($el).click();
+            } else {
+                // If no anchor, try clickable header text
+                cy.contains(colName).click({ force: true });
+            }
+        });
+    });
+});
+
+When(/^Click on the (.+) column heading a second time$/, (colName) => {
+    cy.get('table thead').within(() => {
+        cy.contains('a', colName).then($el => {
+            if ($el.length) {
+                cy.wrap($el).click();
+            } else {
+                cy.contains(colName).click({ force: true });
+            }
+        });
+    });
+});
+
+Then(/^Validate column "?(.+?)"? sort toggles$/, (colName) => {
+    // Check URL for sortField and sortDir query params when available
+    const map = {
+        'Name': 'name',
+        'Price': 'price',
+        'Stock': 'quantity',
+        'Category': 'categoryId'
+    };
+    const field = map[colName] || colName.toLowerCase();
+
+    cy.url().should('include', `sortField=${field}`);
+    // sortDir can be asc or desc; ensure one of them is present
+    cy.url().should('match', new RegExp('sortDir=(asc|desc)'));
 });
