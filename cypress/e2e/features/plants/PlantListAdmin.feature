@@ -33,7 +33,7 @@ Feature: Plant List Admin UI
     Then Validate "Delete" action is NOT visible for any plant in the list
 
   Scenario: TC_PLT_UI_ADMIN_04 Verify that Admin can successfully add new plants with valid inputs
-    Given Admin is on Categories List page
+    Given Admin is on Plant List page
     And Admin is on Add a Plant page
     When Admin enters plant name "Rose"
     And Admin selects a category from dropdown
