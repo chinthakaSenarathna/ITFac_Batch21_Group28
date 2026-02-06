@@ -255,3 +255,50 @@ Then('Validate Admin is redirected to Plant List page', () => {
 Then('Validate newly added plant {string} appears in the list', (plantName) => {
     PlantPage.tableRows.should('contain.text', plantName);
 });
+
+// ===== Reset button =====
+When('Click Reset button', () => {
+    PlantPage.clickReset();
+});
+
+// ===== Column sorting helpers =====
+When(/^Click on the (.+) column heading once$/, (colName) => {
+    // Try to find an anchor inside the table header for the column
+    cy.get('table thead').within(() => {
+        cy.contains('a', colName).then($el => {
+            if ($el.length) {
+                cy.wrap($el).click();
+            } else {
+                // If no anchor, try clickable header text
+                cy.contains(colName).click({ force: true });
+            }
+        });
+    });
+});
+
+When(/^Click on the (.+) column heading a second time$/, (colName) => {
+    cy.get('table thead').within(() => {
+        cy.contains('a', colName).then($el => {
+            if ($el.length) {
+                cy.wrap($el).click();
+            } else {
+                cy.contains(colName).click({ force: true });
+            }
+        });
+    });
+});
+
+Then(/^Validate column "?(.+?)"? sort toggles$/, (colName) => {
+    // Check URL for sortField and sortDir query params when available
+    const map = {
+        'Name': 'name',
+        'Price': 'price',
+        'Stock': 'quantity',
+        'Category': 'categoryId'
+    };
+    const field = map[colName] || colName.toLowerCase();
+
+    cy.url().should('include', `sortField=${field}`);
+    // sortDir can be asc or desc; ensure one of them is present
+    cy.url().should('match', new RegExp('sortDir=(asc|desc)'));
+});
