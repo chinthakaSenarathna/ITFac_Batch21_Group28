@@ -47,9 +47,9 @@ Feature: Plant List Admin UI
 
   Scenario: TC-Admin-Plants-05 Verify All Categories Filtering
     Given Admin is on Plant List page
-    When User selects "cat1-1" from category dropdown
+    When User selects "Pink Rose" from category dropdown
     And Click Search button
-    Then Validate only plants from "cat1-1" category are displayed
+    Then Validate only plants from "Pink Rose" category are displayed
 
   Scenario: TC-Admin-Plants-06 Verify reset button functionality
     Given Admin is on Plant List page

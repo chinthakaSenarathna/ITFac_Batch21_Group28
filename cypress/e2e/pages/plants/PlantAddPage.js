@@ -58,15 +58,7 @@ class PlantAddPage {
     }
 
     selectCategory(categoryText) {
-        this.categorySelect.find('option').then($options => {
-            const optionExists = [...$options].some(opt => opt.text === categoryText);
-            if (optionExists) {
-                this.categorySelect.select(categoryText);
-            } else {
-                cy.log(`Category "${categoryText}" not found. Selecting first available.`);
-                this.categorySelect.select(1); // Select first non-empty option
-            }
-        });
+        this.categorySelect.select(categoryText);
     }
 
     selectFirstCategory() {
