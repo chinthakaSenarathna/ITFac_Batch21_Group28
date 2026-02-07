@@ -7,7 +7,10 @@
     "test": "cypress run",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:run:spec": "cypress run --spec"
+    "cy:run:spec": "cypress run --spec",
+    "allure:generate": "allure generate allure-results -o allure-report --clean",
+    "allure:open": "allure open allure-report",
+    "allure:clean": "rm -rf allure-results allure-report"
   },
   "keywords": [
     "cypress",
@@ -19,6 +22,8 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "@shelex/cypress-allure-plugin": "^2.41.2",
+    "allure-commandline": "^2.36.0",
     "cypress": "^13.6.0",
     "esbuild": "^0.19.0"
   }

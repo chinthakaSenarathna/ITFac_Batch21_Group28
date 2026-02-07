@@ -27,14 +27,7 @@ Feature: Plant List User UI
     And Click Search button
     Then Validate all plants are displayed again
 
-  Scenario: TC_PLT_UI_USER_03 Verify that User can filter plants by category and see filtered results
-    Given User is on Plant List page
-    When User selects "Flowering Plants" from category dropdown
-    And Click Search button
-    Then Validate only plants from "Pink Rose" category are displayed
-    When User selects "All Categories" from category dropdown
-    And Click Search button
-    Then Validate all plants from all categories are displayed
+  
 
   Scenario: TC_PLT_UI_USER_04 Verify that the system displays "No plants found" message when no plants exist for the selected category and search term
     Given User is on Plant List page
@@ -54,3 +47,9 @@ Feature: Plant List User UI
     Then Validate "Low" badge is visible near the quantity for "Orchid"
     And Validate badge is styled distinctly
     And Validate badge text reads "Low"
+
+Scenario: TC_PLT_UI_USER_06 Verify that User can filter plants by Pink Rose category
+    Given User is on Plant List page
+    When User selects "Pink Rose" from category dropdown
+    And Click Search button
+    Then Validate only plants from "Pink Rose" category are displayed

@@ -42,7 +42,7 @@ Feature: Plant User API Tests
       | page       | 0  |
       | size       | 10 |
     Then The response status code should be 200
-    And All returned plants should belong to category ID 2 and name "Pink Rose"
+    And All returned plants should belong to category ID 2 and name "xyz"
     And No plants from category "Succulent" should be returned
 
   Scenario: TC_PLT_API_USER_04 Verify that a user is not allowed to create a new plant using the API

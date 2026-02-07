@@ -1,11 +1,19 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 import SalesApi from "../../../pages/sales/SalesApi";
+import PlantApi from "../../../pages/plants/PlantApi";
 
 // Background: admin is authenticated via the API
 Given("the admin is authenticated via the API", () => {
   SalesApi.login("admin", "admin123").then((token) => {
     // Save token as alias for reuse in other steps
     cy.wrap(token).as("adminToken");
+    
+    // Restore plant 1 inventory for sale tests
+    PlantApi.updatePlant(1, {
+      name: "plant1",
+      price: 1000,
+      quantity: 100,
+    }, token);
   });
 });
 

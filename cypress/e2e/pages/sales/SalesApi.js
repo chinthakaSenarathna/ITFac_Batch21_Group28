@@ -55,11 +55,15 @@ class SalesApi {
   sellPlant(plantId, quantity, token) {
     return cy.request({
       method: "POST",
-      url: `/api/sales/plant/${plantId}?quantity=${quantity}`,
+      url: `/api/sales/plant/${plantId}`,
+      qs: {
+        quantity: parseInt(quantity),
+      },
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      body: "",
+      body: {},
       failOnStatusCode: false,
     });
   }

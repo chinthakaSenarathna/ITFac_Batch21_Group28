@@ -44,11 +44,11 @@ Feature: Plant Admin API Tests
     And The plant should NOT be saved in the database
 
   Scenario: TC_PLT_API_ADMIN_03 Verify that Admin can successfully delete a plant via API
-    Given A plant exists with ID 1
-    When I execute an admin DELETE request to "/api/plants/1"
+    Given A plant exists with ID 11
+    When I execute an admin DELETE request to "/api/plants/11"
     Then The admin response status code should be 204
     And The admin response should contain message "Plant deleted successfully"
-    When I execute an admin GET request to "/api/plants/1"
+    When I execute an admin GET request to "/api/plants/11"
     Then The admin response status code should be 404
     And The admin response should contain error "NOT_FOUND"
 
